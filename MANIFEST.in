@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_fancontrol/templates *
+recursive-include octoprint_fancontrol/translations *
+recursive-include octoprint_fancontrol/static *

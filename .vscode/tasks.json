@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build less",
+      "type": "shell",
+      "command": "lessc --clean-css octoprint_fancontrol/static/less/fancontrol.less octoprint_fancontrol/static/css/fancontrol.css",
+      "problemMatcher": ["$lessc"]
+    }
+  ]
+}

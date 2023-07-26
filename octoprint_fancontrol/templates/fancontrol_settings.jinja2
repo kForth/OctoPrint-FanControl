@@ -1,0 +1,31 @@
+<h3>{{ _("Fan Control") }}</h3>
+<form class="form-horizontal" onsubmit="return false;">
+    <div class="row-fluid">
+        <div class="span2"><strong>{{ _('Index') }}</strong></div>
+        <div class="span6"><strong>{{ _('Name') }}</strong></div>
+        <div class="span2"><strong>{{ _('Speed') }}</strong></div>
+    </div>
+    <div class="control-group" data-bind="foreach: $root.fans">
+        <div class="row-fluid">
+            <div class="span2">
+                <input class="span12" type="number" min="0" step="1" data-bind="value: $data.index">
+            </div>
+            <div class="span6">
+                <input class="span12" type="text" data-bind="value: $data.name">
+            </div>
+            <div class="span2">
+                <input class="span12" type="number" max="255" min="0" step="1" data-bind="value: $data.speed">
+            </div>
+            <div class="span2 text-right">
+                <div class="btn-group">
+                    <button type="button" title="Move Up" class="btn btn-mini btn-grey" data-bind="click: function() { $root.moveFanUp($index()); }, enable: $root.canMoveUp($index())"><i class="fas fa-chevron-up"></i></button>
+                    <button type="button" title="Move Down" class="btn btn-mini btn-grey" data-bind="click: function() { $root.moveFanDown($index()); }, enable: $root.canMoveDown($index())"><i class="fas fa-chevron-down"></i></button>
+                    <button type="button" title="Move Down" class="btn btn-mini btn-danger" data-bind="click: $root.removeFan"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="control-group text-right">
+        <button type="button" title="{{ _('Add Fan') }}" class="btn btn-success btn-small" data-bind="click: function() { $root.addFan(); }"><i class="fas fa-plus"></i> {{ _('Add Fan') }}</button>
+    </div>
+</form>

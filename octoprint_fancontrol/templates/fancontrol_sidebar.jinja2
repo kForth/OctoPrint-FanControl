@@ -1,0 +1,10 @@
+<div data-bind="foreach: fans">
+    <div class="control-group row-fluid">
+        <label class="control-label span5 mt-1" data-bind="text: $data.name"></label>
+        <div class="controls span7 input-prepend input-append">
+            <button class="btn btn-secondary" data-bind="click: $root.setFanOff">{{ _('Off') }}</button>
+            <input class="input-mini" type="number" min="0" max="255" step="1" data-bind="value: $data.speed, event: { change: $root.setFanSpeed }">
+            <button class="btn btn-primary" data-bind="click: $root.setFanSpeed">{{ _('On') }}</button>
+        </div>
+    </div>
+</div>
