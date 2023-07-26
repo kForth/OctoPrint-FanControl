@@ -89,17 +89,16 @@ $(function () {
         // Fan Control
 
         self.setFanSpeed = function () {
-            console.log(this.index(), _.parseInt(this.speed()));
             self.saveSettings();
             OctoPrint.control.sendGcodeWithParameters("M106 P%(index)d S%(speed)d", {
-                index: this.index(),
+                index: _.parseInt(this.index()),
                 speed: _.parseInt(this.speed())
             });
         };
 
         self.setFanOff = function () {
             OctoPrint.control.sendGcodeWithParameters("M107 P%(index)d", {
-                index: this.index()
+                index: _.parseInt(this.index())
             });
         };
 
