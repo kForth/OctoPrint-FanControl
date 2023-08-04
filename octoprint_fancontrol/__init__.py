@@ -14,10 +14,15 @@ class FanControlPlugin(
 
     def get_settings_defaults(self):
         return {
+            "on_command": "M106 P%(id)s S%(speed)s",
+            "off_command": "M107 P%(id)s",
             "fans": [
                 {
-                    "index": 0,
+                    "id": "0",
                     "name": "Cooling Fan",
+                    "min": 0,
+                    "max": 255,
+                    "step": 5,
                     "speed": 255,
                 },
             ],

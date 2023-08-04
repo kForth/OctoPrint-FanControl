@@ -12,12 +12,17 @@ $(function () {
         self.settingsView = parameters[0];
 
         // Observables
+        self.on_command = ko.observable([]);
+        self.off_command = ko.observable([]);
         self.fans = ko.observableArray([]);
 
+        // Settings
         self.saveSettings = function () {
             OctoPrint.settings.save({
                 plugins: {
                     fancontrol: {
+                        on_command: self.on_command(),
+                        off_command: self.off_command(),
                         fans: ko.mapping.toJS(self.fans)
                     }
                 }
@@ -26,21 +31,42 @@ $(function () {
 
         self.readSettings = function () {
             let settings = self.settingsView.settings.plugins.fancontrol;
+            self.on_command(settings.on_command());
+            self.off_command(settings.off_command());
             self.fans(settings.fans());
         };
 
         // Fan List
         self.addFan = function () {
-            let fan = ko.mapping.fromJS({
-                name: self._getNewFanName(),
-                index: self.fans().length,
-                speed: 255
-            });
-            self.fans.push(ko.mapping.fromJS(fan));
+            self.fans.push(
+                ko.mapping.fromJS({
+                    id: "",
+                    name: self._getNewFanName("Fan"),
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    speed: 255
+                })
+            );
         };
 
-        self.removeFan = function () {
-            console.log(this);
+        self.duplicateFan = function () {
+            self.fans.push(
+                ko.mapping.fromJS({
+                    id: this.id(),
+                    name: self._getNewFanName(this.name()),
+                    min: this.min(),
+                    max: this.max(),
+                    step: this.step(),
+                    speed: this.speed()
+                })
+            );
+        };
+
+        self.removeFan = function (index) {
+            let fans = self.fans();
+            _.pullAt(fans, index);
+            self.fans(fans);
         };
 
         self.canMoveUp = function (index) {
@@ -67,14 +93,10 @@ $(function () {
 
         self._getNewFanName = function (base) {
             let i = 0;
-            if (base) {
-                let match = /^(.*)\s+\((\d+)\)$/.exec(base);
-                if (match) {
-                    base = match[1];
-                    i = parseInt(match[2]);
-                }
-            } else {
-                base = gettext("Fan");
+            let match = /^(.*)\s+\((\d+)\)$/.exec(base);
+            if (match) {
+                base = match[1];
+                i = parseInt(match[2]);
             }
             const names = _.map(self.fans(), function (s) {
                 return s.name();
@@ -87,18 +109,17 @@ $(function () {
         };
 
         // Fan Control
-
         self.setFanSpeed = function () {
             self.saveSettings();
-            OctoPrint.control.sendGcodeWithParameters("M106 P%(index)d S%(speed)d", {
-                index: _.parseInt(this.index()),
-                speed: _.parseInt(this.speed())
+            OctoPrint.control.sendGcodeWithParameters(self.on_command(), {
+                id: this.id(),
+                speed: Math.min(Math.max(this.speed(), this.min()), this.max())
             });
         };
 
         self.setFanOff = function () {
-            OctoPrint.control.sendGcodeWithParameters("M107 P%(index)d", {
-                index: _.parseInt(this.index())
+            OctoPrint.control.sendGcodeWithParameters(self.off_command(), {
+                id: this.id()
             });
         };
 

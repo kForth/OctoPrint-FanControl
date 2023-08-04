@@ -1,26 +1,49 @@
 <h3>{{ _("Fan Control") }}</h3>
 <form class="form-horizontal" onsubmit="return false;">
+    <div class="control-group">
+        <label class="control-label" for="fancontrol_on_command">{{ _('Set Speed Template') }}</label>
+        <div class="controls">
+            <input class="input-block-level" type="text" id="fancontrol_on_command" data-bind="value: on_command" required>
+        </div>
+    <div class="control-group">
+    </div>
+        <label class="control-label" for="fancontrol_off_command">{{ _('Fan Off Template') }}</label>
+        <div class="controls">
+            <input class="input-block-level" type="text" id="fancontrol_off_command" data-bind="value: off_command" required>
+        </div>
+    </div>
+
+    <h4>{{ _("Fans") }}</h4>
     <div class="row-fluid">
-        <div class="span2"><strong>{{ _('Index') }}</strong></div>
-        <div class="span6"><strong>{{ _('Name') }}</strong></div>
-        <div class="span2"><strong>{{ _('Speed') }}</strong></div>
+        <div class="span2"><strong title="{{ _('GCode ID for the fan') }}">{{ _('ID') }}</strong></div>
+        <div class="span2"><strong title="{{ _('Name of the fan for the sidebar') }}">{{ _('Name') }}</strong></div>
+        <div class="span2"><strong title="{{ _('Minimum value for the fan speed') }}">{{ _('Min Speed') }}</strong></div>
+        <div class="span2"><strong title="{{ _('Maximum value for the fan speed') }}">{{ _('Max Speed') }}</strong></div>
+        <div class="span2"><strong title="{{ _('Step size for the speed input') }}">{{ _('Step Size') }}</strong></div>
     </div>
     <div class="control-group" data-bind="foreach: $root.fans">
-        <div class="row-fluid">
+        <div class="row-fluid mb-3">
             <div class="span2">
-                <input class="span12" type="number" min="0" step="1" data-bind="value: $data.index">
-            </div>
-            <div class="span6">
-                <input class="span12" type="text" data-bind="value: $data.name">
+                <input class="span12" type="text" data-bind="value: $data.id" required>
             </div>
             <div class="span2">
-                <input class="span12" type="number" max="255" min="0" step="1" data-bind="value: $data.speed">
+                <input class="span12" type="text" data-bind="value: $data.name" required>
+            </div>
+            <div class="span2">
+                <input class="span12" type="number" data-bind="value: $data.min, atrr: { max: $data.max }" required>
+            </div>
+            <div class="span2">
+                <input class="span12" type="number" data-bind="value: $data.max, attr: { min: $data.min }" required>
+            </div>
+            <div class="span2">
+                <input class="span12" type="number" min="0" step="0.001" data-bind="value: $data.step" required>
             </div>
             <div class="span2 text-right">
                 <div class="btn-group">
                     <button type="button" title="Move Up" class="btn btn-mini btn-grey" data-bind="click: function() { $root.moveFanUp($index()); }, enable: $root.canMoveUp($index())"><i class="fas fa-chevron-up"></i></button>
                     <button type="button" title="Move Down" class="btn btn-mini btn-grey" data-bind="click: function() { $root.moveFanDown($index()); }, enable: $root.canMoveDown($index())"><i class="fas fa-chevron-down"></i></button>
-                    <button type="button" title="Move Down" class="btn btn-mini btn-danger" data-bind="click: $root.removeFan"><i class="fas fa-trash"></i></button>
+                    <button type="button" title="Duplicate" class="btn btn-mini btn-primary" data-bind="click: $root.duplicateFan"><i class="fas fa-copy"></i></button>
+                    <button type="button" title="Delete" class="btn btn-mini btn-danger" data-bind="click: function() { $root.removeFan($index()); }"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         </div>
